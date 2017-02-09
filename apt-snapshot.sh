@@ -144,7 +144,7 @@ list () {
 
 case "$1" in
   create)
-    create "${2-snapshot.`date +%FT%T`}"
+    create "${2-snapshot.`date +%F_%T`}"
     ;;
   restore)
     shift
