@@ -6,7 +6,7 @@ test $( id -u )  -eq 0 || exec sudo $0 "$@"
 APT_SNAPSHOT_DIR=${APT_SNAPSHOT_DIR-/var/cache/apt/snapshots}
 TMPDIR=${TMPDIR-/tmp}
 
-trap 'rm -f "${TMPDIR}/$$" "${TMPDIR}/$$.cur";' INT TERM QUIT HUP EXIT 
+trap 'rm -f "${TMPDIR}/$$" "${TMPDIR}/$$.cur";' INT TERM QUIT HUP EXIT
 
 set -e
 
@@ -17,9 +17,9 @@ create_exact () {
   perl -lane 'print $F[0] if $F[1] eq "install"'                |       \
   xargs dpkg -s                                                 |       \
   perl -e 'BEGIN { $/="Package: "; };'                                  \
-       -ne 'chomp; 
-            m/^([\w\+\-\.]+)/ or next; $p = $1; 
-            m/Version:\s*([\w\.\+\-:~]+)/ or next; $v = $1; 
+       -ne 'chomp;
+            m/^([\w\+\-\.]+)/ or next; $p = $1;
+            m/Version:\s*([\w\.\+\-:~]+)/ or next; $v = $1;
             print "$p\t$v\n";'                                          \
   > "$1"
 }
@@ -51,8 +51,8 @@ fetch_snapshot () {
   esac
 }
 
-fetch () { 
-  test -z "$1" && { 
+fetch () {
+  test -z "$1" && {
       echo "error: fetch: takes an argument (hint: try '$id list')" 1>&2
       exit 1;
   }
@@ -64,7 +64,7 @@ restore () {
   local cur="${TMPDIR}/$$.cur"
   local target="${TMPDIR}/$$"
 
-  test -z "$1" && { 
+  test -z "$1" && {
       echo "error: restore: takes an argument (hint: try '$id list')" 1>&2
       exit 1;
   }
@@ -104,10 +104,10 @@ restore () {
                         }' "$target" "$cur"`
 }
 
-install () { 
+install () {
   local target="${TMPDIR}/$$"
 
-  test -z "$1" && { 
+  test -z "$1" && {
       echo "error: install: takes an argument (hint: try '$id list')" 1>&2
       exit 1;
   }
@@ -130,7 +130,7 @@ list () {
             then
               printf "%s\t%s\n"                                                   \
                      "$( basename "$x" )"                                         \
-                     "$( perl -e '@a=stat ($ARGV[0]); 
+                     "$( perl -e '@a=stat ($ARGV[0]);
                                 print scalar localtime ($a[10])' "$x" )"
             fi
         done
@@ -139,12 +139,13 @@ list () {
 }
 
 #---------------------------------------------------------------------
-#                                Main                                 
+#                                Main
 #---------------------------------------------------------------------
 
 case "$1" in
   create)
-    create "${2-snapshot.`date +%F_%T`}"
+    create "${2-snapshot.`date -Iseconds -u`}" #iso-8601 style date in UTC
+    #create "${2-snapshot.`date +%FT%T`}"
     ;;
   restore)
     shift
